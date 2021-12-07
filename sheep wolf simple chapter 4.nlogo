@@ -8,7 +8,7 @@ to setup
   clear-all
   ask patches[
   set grass-amount random-float 10.0
-  set pcolor scale-color green grass-amount 0 20
+  recolor-grass
   ]
   create-sheep number-of-sheep [
   setxy random-xcor random 100
@@ -32,6 +32,7 @@ to go
   check-if-dead
 eat
   ]
+  regrow-grass
   tick
   my-update-plots
 
@@ -59,12 +60,28 @@ to my-update-plots
 end
 
 to eat
-  if (grass-amount) > 1 [
-  set energy energy + 1
-    set grass-amount grass-amount - 1
-    set pcolor scale-color green grass-amount 0 20
+  if (grass-amount >= energy-gain-from-grass)  [
+  set energy energy + energy-gain-from-grass
+    set grass-amount grass-amount - energy-gain-from-grass
+    recolor-grass
     ]
 end
+
+to regrow-grass
+  ask patches[
+  set grass-amount grass-amount + grass-regrowth-rate
+    if grass-amount > 10[
+    set grass-amount 10
+    ]
+  recolor-grass
+  ]
+end
+
+to recolor-grass
+set pcolor scale-color green grass-amount 0 20
+end
+
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
